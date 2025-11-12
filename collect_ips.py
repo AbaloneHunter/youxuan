@@ -405,10 +405,4 @@ if formatted_ips:
 else:
     print('没有采集到任何有效的IP地址')
 
-print("="*60)    # 自动执行Git命令
-    run_git_commands()
-    
-else:
-    print('没有采集到任何有效的IP地址')
-
 print("="*60)
