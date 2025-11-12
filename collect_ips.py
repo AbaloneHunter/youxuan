@@ -161,7 +161,7 @@ def setup_git_config():
             return False
         
         # 配置用户名
-        name_result = subprocess.run(['git', 'config', '--global', 'user.name', 'Cloudflare IP Collector'], 
+        name_result = subprocess.run(['git', 'config', '--global', 'user.name', 'AbaloneHunter'], 
                                    capture_output=True, text=True, cwd=os.getcwd())
         if name_result.returncode != 0:
             print(f"配置Git用户名失败: {name_result.stderr}")
