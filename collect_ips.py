@@ -161,7 +161,7 @@ def setup_git_config():
             return False
         
         # 配置用户名
-        name_result = subprocess.run(['git', 'config', '--global', 'user.name', 'AbaloneHunter'], 
+        name_result = subprocess.run(['git', 'config', '--global', 'user.name', 'Cloudflare IP Collector'], 
                                    capture_output=True, text=True, cwd=os.getcwd())
         if name_result.returncode != 0:
             print(f"配置Git用户名失败: {name_result.stderr}")
@@ -198,9 +198,9 @@ def run_git_commands():
             print("custom_ips.txt 文件不存在，跳过Git提交")
             return
         
-        # 添加所有更改的文件（包括删除的文件）
-        print("添加所有更改到Git暂存区...")
-        add_result = subprocess.run(['git', 'add', '-A'], 
+        # 添加所有更改的文件
+        print("添加文件到Git暂存区...")
+        add_result = subprocess.run(['git', 'add', 'custom_ips.txt'], 
                                   capture_output=True, text=True, cwd=os.getcwd())
         if add_result.returncode != 0:
             print(f"添加文件失败: {add_result.stderr}")
@@ -237,21 +237,6 @@ def run_git_commands():
             
     except Exception as e:
         print(f"Git操作出错: {e}")
-
-def cleanup_old_files():
-    """清理旧文件"""
-    old_files = ['ip.txt']
-    for file in old_files:
-        if os.path.exists(file):
-            try:
-                # 从Git中删除旧文件（如果存在）
-                subprocess.run(['git', 'rm', file], capture_output=True, text=True, cwd=os.getcwd())
-                print(f"已从Git中删除 {file}")
-            except:
-                pass
-            # 删除本地文件
-            os.remove(file)
-            print(f"已删除旧文件 {file}")
 
 # 设置请求头，模拟浏览器访问
 headers = {
@@ -322,16 +307,6 @@ def process_generic_site(soup):
 print("="*60)
 print(f"{'Cloudflare IP采集工具 v1.0':^60}")
 print("="*60)
-
-# 清理旧文件
-print("清理旧文件...")
-cleanup_old_files()
-
-# 检查custom_ips.txt文件是否存在,如果存在则备份
-if os.path.exists('custom_ips.txt'):
-    backup_name = f"custom_ips_backup_{int(time.time())}.txt"
-    os.rename('custom_ips.txt', backup_name)
-    print(f"已备份原custom_ips.txt为{backup_name}")
 
 # 创建一个集合来存储所有IP地址
 all_ips = set()
@@ -425,6 +400,12 @@ if formatted_ips:
         print(f'  {COUNTRY_FLAGS.get(country_code, "🏴")} {country_name}: {count}个')
     
     # 自动执行Git命令
+    run_git_commands()
+    
+else:
+    print('没有采集到任何有效的IP地址')
+
+print("="*60)    # 自动执行Git命令
     run_git_commands()
     
 else:
